@@ -32,6 +32,17 @@ Window {
         nextCheckState: () => checkState === Qt.Checked ? Qt.Unchecked : Qt.Checked
     }
 
+    Button {
+        x: 250
+        y: 20
+        text: "Randomize"
+        onClicked: {
+            for (const triStateSwitch of [triState, triState1, triState2]) {
+                triStateSwitch.corners = GeometryUtils.randomUnitTriangle();
+            }
+        }
+    }
+
     TriStateSwitchBasic {
         id: triState
         x: 50
@@ -94,6 +105,7 @@ Window {
         anchors.topMargin: -8
         anchors.leftMargin: 16
         anchors.bottomMargin: -16
+        z: -1
     }
 
     Line {
@@ -103,20 +115,22 @@ Window {
             left: line.left
         }
         width: 48
+        z: -1
     }
 
     Line {
         anchors {
-            top: triState2.top
-            topMargin: 16
+            bottom: line.bottom
             left: line.left
         }
         width: 48
+        z: -1
     }
 
     component Line : Rectangle {
         implicitWidth: 2
         implicitHeight: 2
         color: "#666"
+        radius: Math.min(width, height) / 2
     }
 }

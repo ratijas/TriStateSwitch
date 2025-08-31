@@ -11,9 +11,10 @@ But what if they were combined to get the best of both worlds?
 
 Behold: an **Өчпочмак-shaped triangle switch!**
 
-- Fully compliant with QtQuick.Templates architecture.
-- Comes with a default style implementation with animated knob icons.
-- Supports arbitrary corners locations.
+- 💯 Fully compliant with QtQuick.Templates architecture.
+- 🎛️ Comes with a default style implementation with animated knob icons.
+- 📐 Supports arbitrary corners locations.
+- 🎲 Generate random shapes on the fly.
 
 Building
 ========

@@ -31,6 +31,9 @@ public:
     // Otherwise, find the closest vertex or a perpendicular projection on the perimeter.
     Q_INVOKABLE static QPointF snapPointToTriangle(QPointF vertexA, QPointF vertexB, QPointF vertexC, QPointF position);
     Q_INVOKABLE static QVector2D snapVectorToTriangle(QVector2D vertexA, QVector2D vertexB, QVector2D vertexC, QVector2D position);
+
+    // Generate a random triangle (three vertices) whose bounds are a unit square.
+    Q_INVOKABLE static QList<QPointF> randomUnitTriangle();
 };
 
 #endif // GEOMETRYUTILS_H
