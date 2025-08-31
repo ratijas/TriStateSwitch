@@ -3,10 +3,24 @@ import QtQuick.Shapes
 import QtQuick.Controls.Basic
 
 Window {
+    id: root
+
     width: 400
     height: 300
     visible: true
     title: qsTr("Tri State Switch")
+
+    function prevCheckState(checkState: int): int {
+        switch (checkState) {
+        default:
+        case Qt.Unchecked:
+            return Qt.Checked;
+        case Qt.PartiallyChecked:
+            return Qt.Unchecked;
+        case Qt.Checked:
+            return Qt.PartiallyChecked;
+        }
+    }
 
     CheckBox {
         x: 50
@@ -63,7 +77,8 @@ Window {
         x: 125
         y: 230
         checkState: Qt.Checked
-        text: "Child Tri State Switch 2"
+        nextCheckState: () => root.prevCheckState(checkState)
+        text: "Child Tri State Switch 2\nnextCheckState: prevCheckState"
     }
 
     Line {

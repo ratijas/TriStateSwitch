@@ -15,6 +15,7 @@ class TriStateSwitch : public QQuickAbstractButton
     Q_PROPERTY(QPointF position READ position WRITE setPosition NOTIFY positionChanged FINAL)
     Q_PROPERTY(QPointF visualPosition READ visualPosition NOTIFY visualPositionChanged FINAL)
     Q_PROPERTY(Qt::CheckState checkState READ checkState WRITE setCheckState NOTIFY checkStateChanged FINAL)
+    Q_PROPERTY(QJSValue nextCheckState READ getNextCheckState WRITE setNextCheckState NOTIFY nextCheckStateChanged FINAL)
     QML_NAMED_ELEMENT(TriStateSwitch)
 
 public:
@@ -28,10 +29,14 @@ public:
     Qt::CheckState checkState() const;
     void setCheckState(Qt::CheckState state);
 
+    QJSValue getNextCheckState() const;
+    void setNextCheckState(const QJSValue &callback);
+
 Q_SIGNALS:
     void positionChanged();
     void visualPositionChanged();
     void checkStateChanged();
+    void nextCheckStateChanged();
 
 protected:
     void mouseMoveEvent(QMouseEvent *event) override;

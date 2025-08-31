@@ -25,6 +25,7 @@ public:
     QPointF position{0.0, 0.0};
 
     Qt::CheckState checkState = Qt::Unchecked;
+    QJSValue nextCheckState;
 };
 
 QPointF TriStateSwitchPrivate::positionAt(const QPointF &point) const
@@ -218,6 +219,19 @@ void TriStateSwitch::setCheckState(Qt::CheckState state)
     setPosition(checkStateToPosition(d->checkState));
 }
 
+QJSValue TriStateSwitch::getNextCheckState() const
+{
+    Q_D(const TriStateSwitch);
+    return d->nextCheckState;
+}
+
+void TriStateSwitch::setNextCheckState(const QJSValue &callback)
+{
+    Q_D(TriStateSwitch);
+    d->nextCheckState = callback;
+    Q_EMIT nextCheckStateChanged();
+}
+
 void TriStateSwitch::nextCheckState()
 {
     Q_D(TriStateSwitch);
@@ -228,6 +242,8 @@ void TriStateSwitch::nextCheckState()
         // the checked state might not change => force a position update to
         // avoid that the handle is left somewhere in the middle (QTBUG-57944)
         setPosition(position);
+    } else if (d->nextCheckState.isCallable()) {
+        setCheckState(static_cast<Qt::CheckState>(d->nextCheckState.call().toInt()));
     } else {
         setCheckState(static_cast<Qt::CheckState>((d->checkState + 1) % 3));
     }
