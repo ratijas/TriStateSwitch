@@ -97,7 +97,6 @@ std::optional<SnapCandidate> makeProjectionCandidate(const QVector2D base, const
     const QVector2D proj = QVector2D::dotProduct(position, base) / base.lengthSquared() * base;
     const bool sameDirectionX = base.x() < 0.0 == proj.x() < 0.0;
     const bool sameDirectionY = base.y() < 0.0 == proj.y() < 0.0;
-    // qDebug() << "PROJ" << sameDirectionX << sameDirectionY << "BASE" << base << position << "PROJ" << proj;
     if (sameDirectionX && sameDirectionY && proj.lengthSquared() <= base.lengthSquared()) {
         return std::make_optional(SnapCandidate {
             .target = proj,
@@ -110,12 +109,6 @@ std::optional<SnapCandidate> makeProjectionCandidate(const QVector2D base, const
 std::optional<SnapCandidate> makeProjectionCandidate(const QVector2D lineA, const QVector2D lineB, const QVector2D position)
 {
     std::optional<SnapCandidate> maybeCandidate = makeProjectionCandidate(lineB - lineA, position - lineA);
-    if (maybeCandidate.has_value()) {
-        const auto c = *maybeCandidate;
-        qDebug() << qSetRealNumberPrecision(2) << qSetFieldWidth(2) << "PROJ" << lineA << lineB << position << "RESULT" << c.target << c.distance;
-    } else {
-        qDebug() << qSetRealNumberPrecision(2) << qSetFieldWidth(2) << "PROJ" << lineA << lineB << position << "NONE";
-    }
     if (maybeCandidate.has_value()) {
         maybeCandidate->target += lineA;
     }
@@ -135,8 +128,6 @@ bool isPositionInsideTriangle(QVector2D vertexA, QVector2D vertexB, QVector2D ve
 
     const bool allNeg = (sign1 < 0.0) || (sign2 < 0.0) || (sign3 < 0.0);
     const bool allPos = (sign1 > 0.0) || (sign2 > 0.0) || (sign3 > 0.0);
-
-    // qDebug() << "ALL NEG:" << allNeg << "ALL POS:" << allPos;
 
     return !(allNeg && allPos);
 }
