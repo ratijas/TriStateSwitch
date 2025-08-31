@@ -13,6 +13,7 @@ Behold: an **Өчпочмак-shaped triangle switch!**
 
 - Fully compliant with QtQuick.Templates architecture.
 - Comes with a default style implementation with animated knob icons.
+- Supports arbitrary corners locations.
 
 Building
 ========

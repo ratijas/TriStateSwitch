@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QPoint>
+#include <QVector2D>
 
 class GeometryUtils : public QObject
 {
@@ -25,6 +26,11 @@ public:
     //  - x corresponds to the position between the start and end points,
     //  - y corresponds to the position on a perpendicular between the third (zero) point and a line between start and end points.
     Q_INVOKABLE static QPointF planarPosition(QPointF start, QPointF end, QPointF zero, QPointF position);
+
+    // If the point is inside the triangle, do nothing and return the point.
+    // Otherwise, find the closest vertex or a perpendicular projection on the perimeter.
+    Q_INVOKABLE static QPointF snapPointToTriangle(QPointF vertexA, QPointF vertexB, QPointF vertexC, QPointF position);
+    Q_INVOKABLE static QVector2D snapVectorToTriangle(QVector2D vertexA, QVector2D vertexB, QVector2D vertexC, QVector2D position);
 };
 
 #endif // GEOMETRYUTILS_H

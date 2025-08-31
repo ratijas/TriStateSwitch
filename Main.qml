@@ -62,6 +62,8 @@ Window {
         }
 
         text: "Tri State Switch!"
+        corners: [Qt.point(0, 0.5), Qt.point(1, 0), Qt.point(1, 1)]
+        // corners: [Qt.point(0, 0.0), Qt.point(1, 0), Qt.point(1, 1)]
     }
 
     TriStateSwitchBasic {
@@ -70,6 +72,7 @@ Window {
         y: 155
         checkState: Qt.Checked
         text: "Child Tri State Switch 1"
+        corners: [Qt.point(0, 1), Qt.point(0.7, 0), Qt.point(1, 1)]
     }
 
     TriStateSwitchBasic {
@@ -79,6 +82,7 @@ Window {
         checkState: Qt.Checked
         nextCheckState: () => root.prevCheckState(checkState)
         text: "Child Tri State Switch 2\nnextCheckState: prevCheckState"
+        corners: [Qt.point(0, 0), Qt.point(1, 0.3), Qt.point(0.6, 1)]
     }
 
     Line {

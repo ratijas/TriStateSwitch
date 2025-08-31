@@ -8,13 +8,16 @@ Item {
 
     required property TriStateSwitch control
 
+    readonly property point position: Qt.point(positionX, positionY)
     property real positionX: control.position.x
     property real positionY: control.position.y
-    readonly property point position: Qt.point(positionX, positionY)
 
-    readonly property point positionUnchecked: Qt.point(0, 0)
-    readonly property point positionPartiallyChecked: Qt.point(1, 0)
-    readonly property point positionChecked: Qt.point(1, 1)
+    NumberBehavior on positionX {}
+    NumberBehavior on positionY {}
+
+    readonly property point positionUnchecked: root.control.corners[0]
+    readonly property point positionPartiallyChecked: root.control.corners[1]
+    readonly property point positionChecked: root.control.corners[2]
 
     // transitions in normalized coordinates:
     // x corresponds to the position between the specified states,
@@ -34,12 +37,12 @@ Item {
 
     // outline
     Shape {
-        id: outline
+        id: shape
 
         x: root.knobSize / 2
         y: root.knobSize / 2
-        width: parent.width - root.knobSize
-        height: parent.height - root.knobSize
+        width: root.width - root.knobSize
+        height: root.height - root.knobSize
 
         ShapePath {
             strokeColor: "#e8e8e8"
@@ -48,14 +51,17 @@ Item {
             capStyle: ShapePath.RoundCap
             joinStyle: ShapePath.RoundJoin
 
-            startX: root.positionUnchecked.x * (root.width - root.knobSize)
-            startY: root.positionUnchecked.y * (root.height - root.knobSize)
+            startX: 0
+            startY: 0
 
             PathSvg {
-                path: `L ${root.positionPartiallyChecked.x * (root.width - root.knobSize)}
-                      ${root.positionPartiallyChecked.y * (root.height - root.knobSize)}
-                    L ${root.positionChecked.x * (root.width - root.knobSize)}
-                      ${root.positionChecked.y * (root.height - root.knobSize)}
+                path: `
+                    M ${root.positionUnchecked.x * shape.width}
+                      ${root.positionUnchecked.y * shape.height}
+                    L ${root.positionPartiallyChecked.x * shape.width}
+                      ${root.positionPartiallyChecked.y * shape.height}
+                    L ${root.positionChecked.x * shape.width}
+                      ${root.positionChecked.y * shape.height}
                     z
                 `
                 // unbreak indentation in QtCreator
@@ -83,14 +89,15 @@ Item {
     //     font.family: "monospace"
     // }
 
-    NumberBehavior on positionX {}
-    NumberBehavior on positionY {}
-
     // knob
     Item {
         width: root.knobSize
         height: root.knobSize
 
+        // These expressions don't really make the knob 'stick' to the cursor :(
+        // But rewriting it in the way that makes it 'stick' breaks
+        // - either dragging from the edges outside indicator,
+        // - or snapping around the vertices because of the changes to the scale of the triangle.
         x: root.control.visualPosition.x * (root.width - root.knobSize)
         y: root.control.visualPosition.y * (root.height - root.knobSize)
 
