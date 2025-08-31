@@ -23,7 +23,7 @@ Window {
     }
 
     CheckBox {
-        x: 50
+        x: 30
         y: 20
         text: "Toggle the switch"
         tristate: true
@@ -33,7 +33,8 @@ Window {
     }
 
     Button {
-        x: 250
+        id: randomizeButton
+        x: 270
         y: 20
         text: "Randomize"
         onClicked: {
@@ -45,7 +46,7 @@ Window {
 
     TriStateSwitchBasic {
         id: triState
-        x: 50
+        x: 30
         y: 80
         checkState: {
             if (triState1.checkState === Qt.Checked && triState2.checkState === Qt.Checked) {
@@ -79,7 +80,7 @@ Window {
 
     TriStateSwitchBasic {
         id: triState1
-        x: 125
+        x: 100
         y: 155
         checkState: Qt.Checked
         text: "Child Tri State Switch 1"
@@ -88,7 +89,7 @@ Window {
 
     TriStateSwitchBasic {
         id: triState2
-        x: 125
+        x: 100
         y: 230
         checkState: Qt.Checked
         nextCheckState: () => root.prevCheckState(checkState)
@@ -132,5 +133,21 @@ Window {
         implicitHeight: 2
         color: "#666"
         radius: Math.min(width, height) / 2
+    }
+
+    // about
+    Label {
+        anchors {
+            horizontalCenter: randomizeButton.horizontalCenter
+            top: randomizeButton.bottom
+            topMargin: 24
+        }
+        horizontalAlignment: Text.AlignHCenter
+        textFormat: Text.StyledText
+        text: '<a href="https://github.com/ratijas/TriStateSwitch">GitHub</a><br/>© Ratijas'
+        onLinkActivated: link => Qt.openUrlExternally(link)
+
+        ToolTip.visible: ToolTip.text !== ""
+        ToolTip.text: hoveredLink
     }
 }
