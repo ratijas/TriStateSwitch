@@ -47,7 +47,6 @@ Item {
         ShapePath {
             strokeColor: "#e8e8e8"
             strokeWidth: root.knobSize
-            // fillColor: "#e8e8e8"
             capStyle: ShapePath.RoundCap
             joinStyle: ShapePath.RoundJoin
 
@@ -77,17 +76,6 @@ Item {
             shadowColor: "black"
         }
     }
-
-    // Text {
-    //     z: 999
-    //     y: 0
-    //     x: 200
-    //     // anchors.centerIn: parent
-    //     text: `checked: ${root.positionOfChecked}\npartial:${root.positionOfPartiallyChecked}\nuncheck:${positionOfUnchecked}`
-    //     color: "#833"
-    //     font.pointSize: 14
-    //     font.family: "monospace"
-    // }
 
     // knob
     Item {
