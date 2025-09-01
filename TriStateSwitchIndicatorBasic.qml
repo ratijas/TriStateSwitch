@@ -45,8 +45,9 @@ Item {
         height: root.height - root.knobSize
 
         ShapePath {
-            strokeColor: "#e8e8e8"
-            strokeWidth: root.knobSize
+            fillColor: root.control.palette.base
+            strokeColor: root.control.visualFocus ? root.control.palette.highlight : root.control.palette.mid
+            strokeWidth: root.control.visualFocus ? 2 : 1
             capStyle: ShapePath.RoundCap
             joinStyle: ShapePath.RoundJoin
 
@@ -59,11 +60,11 @@ Item {
         }
 
         layer.enabled: true
-        layer.samples: 2
+        layer.samples: 4
         layer.effect: MultiEffect {
             shadowEnabled: true
-            shadowBlur: 0.5
-            shadowColor: "black"
+            shadowBlur: 0.2
+            shadowColor: root.control.palette.shadow
         }
     }
 
@@ -87,9 +88,9 @@ Item {
             anchors.margins: 2
             // that makes it 24x24
 
-            color: "#EEE"
-            border.color: control.activeFocus ? root.control.palette.highlight : "#33333380"
-            border.width: 1
+            color: root.control.down ? root.control.palette.light : root.control.palette.base
+            border.width: root.control.visualFocus ? 2 : 1
+            border.color: root.control.visualFocus ? root.control.palette.highlight : root.control.palette.mid
             radius: width / 2
 
             // icon canvas
@@ -102,7 +103,6 @@ Item {
                 // collapses into a middle dot for PartiallyChecked (...)
                 Line {
                     anchors.centerIn: parent
-                    anchors.alignWhenCentered: false
                     width: GeometryUtils.lerp(parent.width, implicitWidth, root.positionOfPartiallyChecked)
                 }
 
@@ -110,7 +110,6 @@ Item {
                 // collapses into a middle dot for Unchecked & PartiallyChecked (...)
                 Line {
                     anchors.centerIn: parent
-                    anchors.alignWhenCentered: false
                     height: GeometryUtils.lerp(implicitHeight, parent.height, root.positionOfChecked)
                 }
 
@@ -132,9 +131,10 @@ Item {
     }
 
     component Line : Rectangle {
+        anchors.alignWhenCentered: false
         implicitWidth: 4
         implicitHeight: 4
-        color: "#666"
+        color: root.control.palette.dark
         radius: Math.min(width, height)
     }
 
