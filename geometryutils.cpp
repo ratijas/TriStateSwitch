@@ -1,8 +1,12 @@
 #include "geometryutils.h"
 
+#include <QStringBuilder>
+
 #include <algorithm>
 #include <optional>
 #include <random>
+
+using namespace Qt::StringLiterals;
 
 GeometryUtils::GeometryUtils(QObject *parent)
     : QObject{parent}
@@ -132,7 +136,7 @@ bool isPositionInsideTriangle(QVector2D vertexA, QVector2D vertexB, QVector2D ve
     return !(allNeg && allPos);
 }
 
-};
+}
 
 QPointF GeometryUtils::snapPointToTriangle(QPointF vertexA, QPointF vertexB, QPointF vertexC, QPointF position)
 {
@@ -237,6 +241,95 @@ QList<QPointF> GeometryUtils::randomUnitTriangle()
     // random swap vertices
     std::shuffle(vertices.begin(), vertices.end(), rng);
     return vertices;
+}
+
+namespace
+{
+
+float crossProduct(QVector2D a, QVector2D b)
+{
+    return a[0] * b[1] - a[1] * b[0];
+}
+
+// Returns:
+// > 0: The triangle has a CCW winding (front-facing).
+// < 0: The triangle has a CW winding (back-facing).
+// = 0: The points are collinear, or the triangle has zero area.
+float triangleWinding(QPointF vertexA, QPointF vertexB, QPointF vertexC)
+{
+    const QVector2D a = QVector2D(vertexA - vertexC);
+    const QVector2D b = QVector2D(vertexB - vertexC);
+    return crossProduct(a, b);
+}
+
+// Translate line defined as two end points A and B by a given vector
+std::pair<QPointF, QPointF> translateLine(const QPointF lineA, const QPointF lineB, const QVector2D vector)
+{
+    const auto lineAEx = (QVector2D(lineA) + vector).toPointF();
+    const auto lineBEx = (QVector2D(lineB) + vector).toPointF();
+    return {lineAEx, lineBEx};
+}
+
+std::pair<QPointF, QPointF> translateLine(const QPointF lineA, const QPointF lineB, const QPointF origin, qreal distance)
+{
+    // step 1: find a perpendicular vector that points away from the `origin` point
+    const QPointF proj = projection(lineA, lineB, origin);
+    const QVector2D perpendicular = QVector2D(proj - origin);
+
+    // step 2: scale it down to the required distance
+    const QVector2D extrusion = perpendicular.normalized() * distance;
+
+    // step 3: translate the line
+    return translateLine(lineA, lineB, extrusion);
+}
+
+inline QString svgNumber(qreal number)
+{
+    return u' ' % QString::number(number, 'f') % u' ';
+}
+
+inline QString svgPoint(QPointF point)
+{
+    return svgNumber(point.x()) % svgNumber(point.y());
+}
+
+inline QString svgArc(QPointF point, qreal radius)
+{
+    const QString r = svgNumber(radius);
+    // A rx ry x-axis-rotation large-arc-flag sweep-flag x y
+    return u" A"_s % r % r % u"0 0 1" % svgPoint(point);
+}
+
+}
+
+QString GeometryUtils::roundedTriangleOutlineSvgPath(QPointF vertexA, QPointF vertexB, QPointF vertexC, qreal cornerRadius)
+{
+    // step 1: ensure consistent winding order
+    if (triangleWinding(vertexA, vertexB, vertexC) < 0.0) {
+        std::swap(vertexB, vertexC);
+    }
+
+    // step 2: extrude lines outwards
+    const auto lineAB = translateLine(vertexA, vertexB, vertexC, cornerRadius);
+    const auto lineBC = translateLine(vertexB, vertexC, vertexA, cornerRadius);
+    const auto lineCA = translateLine(vertexC, vertexA, vertexB, cornerRadius);
+
+    const QString svg = u"M"_s % svgPoint(lineAB.first)
+                        % u'L' % svgPoint(lineAB.second) % svgArc(lineBC.first, cornerRadius)
+                        % u'L' % svgPoint(lineBC.second) % svgArc(lineCA.first, cornerRadius)
+                        % u'L' % svgPoint(lineCA.second) % svgArc(lineAB.first, cornerRadius)
+                        % u'z';
+
+    return svg;
+}
+
+QList<QPointF> GeometryUtils::scaledPoints(const QList<QPointF> &points, QSizeF scale)
+{
+    QList<QPointF> scaled = points;
+    for (QPointF &point : scaled) {
+        point = QPointF(point.x() * scale.width(), point.y() * scale.height());
+    }
+    return scaled;
 }
 
 #include "moc_geometryutils.cpp"

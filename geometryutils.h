@@ -34,6 +34,14 @@ public:
 
     // Generate a random triangle (three vertices) whose bounds are a unit square.
     Q_INVOKABLE static QList<QPointF> randomUnitTriangle();
+
+    // Generate an SVG path for an outline of a triangle with rounded corners.
+    // Vertices are centers of circles for the rounded corners,
+    // so the all edges are offset outward by the radius.
+    Q_INVOKABLE static QString roundedTriangleOutlineSvgPath(QPointF vertexA, QPointF vertexB, QPointF vertexC, qreal cornerRadius);
+
+    // Multiply each point by the given scale factor.
+    Q_INVOKABLE static QList<QPointF> scaledPoints(const QList<QPointF> &points, QSizeF scale);
 };
 
 #endif // GEOMETRYUTILS_H

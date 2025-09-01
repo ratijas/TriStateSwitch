@@ -50,21 +50,11 @@ Item {
             capStyle: ShapePath.RoundCap
             joinStyle: ShapePath.RoundJoin
 
-            startX: 0
-            startY: 0
-
             PathSvg {
-                path: `
-                    M ${root.positionUnchecked.x * shape.width}
-                      ${root.positionUnchecked.y * shape.height}
-                    L ${root.positionPartiallyChecked.x * shape.width}
-                      ${root.positionPartiallyChecked.y * shape.height}
-                    L ${root.positionChecked.x * shape.width}
-                      ${root.positionChecked.y * shape.height}
-                    z
-                `
-                // unbreak indentation in QtCreator
-                objectName: ""
+                path: {
+                    const vertices = GeometryUtils.scaledPoints(root.control.corners, Qt.size(shape.width, shape.height));
+                    return GeometryUtils.roundedTriangleOutlineSvgPath(...vertices, knobSize / 2);
+                }
             }
         }
 
